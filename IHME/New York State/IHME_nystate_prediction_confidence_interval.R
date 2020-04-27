@@ -163,10 +163,3 @@ plot(df0_NY_cum_pred$death_pred, type = "l", ylim = c(0, max(df0_NY_cum_pred$PI_
 lines(df0_NY_cum_pred$PI_upper, type = "b")
 lines(df0_NY_cum_pred$PI_low, type = "b")
 write.xlsx(df0_NY_cum_pred, "~/Dropbox/COVID_19/results/IHME/NY/Plots_medium_article/df0_NY_pred_CI.xlsx")
-
-
-
-
-
-
-
