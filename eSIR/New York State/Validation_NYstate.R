@@ -4,7 +4,7 @@ library(eSIR)
 library(rjags)
 library(ggplot2)
 library(gridExtra)
-source('eSIR_updated_functions.R')
+source('eSIR_modified_functions.R')
 
 region.name = 'New York' # name of the country/region, used for extracting Hopkins Covid-19 data
 Ns = c('New York' = 1.945e7)
