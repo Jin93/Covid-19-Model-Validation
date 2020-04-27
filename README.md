@@ -21,8 +21,11 @@ Source code for validation and projection of the following Covid-19 models:
 
 
 ## Acknowledgements
-We would like to thank our group members for their contributions.
-* **Neha Agarwala**, Department of Mathematics and Statistics, University of Maryland, Baltimore County
-
-
+* Neha Agarwala, Department of Mathematics and Statistics, University of Maryland, Baltimore County
+* Jin Jin, Department of Biostatistics, Johns Hopkins Bloomberg School of Public Health
+* Prosenjit Kundu, Department of Biostatistics, Johns Hopkins Bloomberg School of Public Health
+* Yi Wang, Department of Biostatistics, Johns Hopkins Bloomberg School of Public Health
+* Ruzhang Zhao, Department of Biostatistics, Johns Hopkins Bloomberg School of Public Health
+* [Nilanjan Chatterjee](https://nilanjanchatterjee.org/), Department of Biostatistics, Johns Hopkins Bloomberg School of Public Health
+ 
 
