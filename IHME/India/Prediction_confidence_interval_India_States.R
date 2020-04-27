@@ -1,3 +1,4 @@
+# Prediction interval based on mode based uncertainity
 decre_fun = function(x)
 {
   return(1/(0.1+x^2))
