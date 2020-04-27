@@ -21,6 +21,9 @@ lag.val=7 # number of days for parameter tuning
 lag=14 # c(21,14,7) number of days before peak, i.e. the last day in the training data set
 setwd(paste0('~/Dropbox/Covid-19/eSIR-result/',region.name))
 
+
+# ------------------------ Data Creation ------------------------
+
 # since we are unable to obtain the data for daily recovery, we use the death:recovery ratio for the whole us to estimate it
 # first, get death:recovered ratio for the whole US:
 region.name = 'US'
@@ -74,7 +77,7 @@ R.region = R.region[1:dat.length]
 # death:recovered ratio for the whole US:
 ratio.d.r = F.region/R.region
 
-# now for the state:
+# now for NY state:
 region.name = 'New York'
 setwd(paste0('~/Dropbox/Covid-19/eSIR-result/',region.name))
 
@@ -133,9 +136,6 @@ I.region = I.region[1:dat.length]
 F.region = F.region[1:dat.length]
 R.region = floor(F.region / ratio.d.r)
 
-
-
-
 # combine I, F and R
 dat = cbind(I=as.numeric(I.region),F=as.numeric(F.region),R=as.numeric(R.region))
 colnames(dat) = c('I','F','R')
@@ -187,7 +187,10 @@ Y <- NI_complete/N - R
 # the proportion of death in removed
 death_in_R = as.numeric(dat.train[length(R),'F']/RI_complete[length(R)])
 
-## plot the observed data
+
+
+# ------------------------ Plot the observed data, lockdown dates, etc. ------------------------
+
 # daily cases, death and recovered
 daily.train = rbind(NA,pmax(t(sapply(1:(nrow(dat.train)-1),function(x){dat.train[x+1,]-dat.train[x,]})),0))
 daily.validation = rbind(pmax(dat[nrow(daily.train),]-dat[nrow(daily.train)-1,],0),pmax(dat[nrow(daily.train)+1,]-dat[nrow(daily.train),],0),pmax(t(sapply(1:(nrow(dat.validation)-1),function(x){dat.validation[x+1,]-dat.validation[x,]})),0))
@@ -222,8 +225,8 @@ legend('topleft', legend=c("Confirmed Cases Training","Confirmed Cases Validatio
                            "Recovered Training","Recovered Validation"),
        col=c(rep('black',2),rep('red',2),rep('blue',2)), lty=c(1,2,1,2,1,2), cex=0.7)
 
+# ------------------------ Fit eSIR model ------------------------
 
-###### eSIR model
 ## model fitting, parameter tuning using the 1-week data after the last day of training data
 ress0=list()
 rmse = numeric() # use rmse to select parameters
@@ -252,6 +255,9 @@ lambda0 = candidates[l,'lambda0']
 pi.min = candidates[l,'pi.min']
 res.exp <- ress0[[l]]
 decay.period = res.exp$decay.period # the duration of transmission rate decay
+
+
+# ------------------------ Create plots ------------------------
 
 T_fin = 200 - 1
 ress = list()
@@ -339,7 +345,8 @@ plot1 <- ggplot() +
   scale_color_manual(values = colors)
 plot1
 
-##### write csv
+# ------------------------ Write output to .csv file ------------------------
+
 output = data.frame(time = 1:T_fin,
                     date = chron_ls,
                     observed = c((daily[-1,'I']),rep(NA,T_fin+1-nrow(dat))),
@@ -348,5 +355,6 @@ output = data.frame(time = 1:T_fin,
                     estimate.ub = daily.upper.Itotal, # unsmoothed uppwer bound
                     phase=c(rep('Training',nrow(dat.train)-1),rep('Validation',lag.val),rep('Holdout',l.test-lag.val),rep('Projection',T_fin+1-nrow(dat))))
 write.csv(output,file=paste0(region.name,'-eSIR-',lag-lag.val,'.csv'))
+
 ###### please refer to Create_input_for_tablau_plots.R for the code that
 ###### generates data used for making the plots in the article.
