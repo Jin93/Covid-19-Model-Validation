@@ -20,10 +20,9 @@ Source code for validation and projection of the following Covid-19 models:
 
 
 
-## Model Validation
-
-#### `IHME`
-
+## Acknowledgements
+We would like to thank our group members for their contributions.
+* **Neha Agarwala**, Department of Mathematics and Statistics, University of Maryland, Baltimore County
 
 
 
