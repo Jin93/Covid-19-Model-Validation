@@ -1,3 +1,4 @@
+#install_github("lilywang1988/eSIR")
 library(devtools)
 install_github("lilywang1988/eSIR")
 library(eSIR)
