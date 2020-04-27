@@ -4,7 +4,7 @@ library(eSIR)
 library(rjags)
 library(ggplot2)
 library(gridExtra)
-source('eSIR_updated_functions.R')
+source('eSIR_modified_functions.R')
 ### data:
 #install.packages("pacman")
 library(pacman)
