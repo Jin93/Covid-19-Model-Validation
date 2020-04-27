@@ -597,8 +597,7 @@ fit.eSIR=function (Y, R, pi0 = NULL, change_time = NULL, exponential = FALSE,
                            "second_tp_ci_up", "end_p_mean", "end_p_ci_low", "end_p_ci_med", 
                            "end_p_ci_up", "begin_str")
   if (save_files) 
-    write.csv(out_table, file = paste0(file_add, casename, 
-                                       "_summary.csv"))
+    write.csv(out_table, file = paste0(file_add, casename, "_summary.csv"))
   if (save_mcmc) {
     save(theta_p, theta_pp, Y, Y_pp, R, R_pp, beta_p, gamma_p, 
          R0_p, k_p, lambdaY_p, lambdaR_p, file = paste0(file_add, 
@@ -619,8 +618,7 @@ fit.eSIR=function (Y, R, pi0 = NULL, change_time = NULL, exponential = FALSE,
     plot_data_ls <- list(casename = casename, other_plot = other_plot, 
                          spaghetti_plot_ls = spaghetti_plot_ls, infection_plot_ls = infection_plot_ls, 
                          removed_plot_ls = removed_plot_ls)
-    save(plot_data_ls, file = paste0(file_add, casename, 
-                                     "_plot_data.RData"))
+    save(plot_data_ls, file = paste0(file_add, casename, "_plot_data.RData"))
   }
   res <- list(casename = casename, incidence_mean = incidence_mean, data_comp = data_comp, data_comp_R = data_comp_R,
               incidence_ci = incidence_ci, out_table = out_table, plot_infection = plot1, 
