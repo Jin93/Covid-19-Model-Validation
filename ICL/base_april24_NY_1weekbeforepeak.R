@@ -1,0 +1,308 @@
+library(rstan)
+library(data.table)
+library(lubridate)
+library(gdata)
+library(dplyr)
+library(tidyr)
+library(EnvStats)
+library(optparse)
+
+setwd("/Users/yiwang/Dropbox/cvd/cvd_N/model/covid19model-master")
+
+countries_sub=countries <- c(
+  "Denmark",
+  "Italy",
+  "Germany",
+  "Spain",
+  #"United_Kingdom",
+  "France",
+  "Norway",
+  "Belgium",
+  "Austria",
+  "Sweden",
+  "Switzerland",
+  "Greece",
+  "Portugal",
+  "Netherlands",
+  "NY"
+)
+
+# Commandline options and parsing
+
+## Reading all data
+d=readRDS('data/COVID-19-up-to-date.rds')
+d=d[which(d$Countries.and.territories %in% countries_sub),]
+
+################## load data 
+# load Europe data
+load("/Users/yiwang/Dropbox/cvd/cvd_N/model/data/df_case_Eu.RData")#df_case_Eu
+
+# load NY data 
+load("/Users/yiwang/Dropbox/cvd/cvd_N/model/data/data_merge_JHU_NY.RData")# data_merge_JHU_NY
+
+# keep NY data till till peak
+# NY peak date of death="4/07/2020"
+last_date_training_NY="2020-03-31"
+last_date_training_NY=as.Date(last_date_training_NY,format="%Y-%m-%d")
+df_NY_training=data_merge_JHU_NY[which(! as.Date(data_merge_JHU_NY$DateRep, format = "%d/%m/%Y") > 
+                                                         last_date_training_NY), ]
+
+# load india data
+# load("/Users/yiwang/Dropbox/cvd/cvd_N/model/data/df_mh.RData")#df_mh
+# load("/Users/yiwang/Dropbox/cvd/cvd_N/model/data/df_gj.RData")#df_gj
+
+# df_NY_training=df_NY_training[which(!as.Date(df_NY_training$DateRep, format="%d/%m/%Y")
+#                                     < as.Date("2020-02-29", format = "%Y-%m-%d")),]
+# df_case_Eu=df_case_Eu[which(!as.Date(df_case_Eu$DateRep, format="%d/%m/%Y")
+#                             < as.Date("2020-02-29", format = "%Y-%m-%d")),]
+# 
+
+# combine europe and NY data
+df_case=rbind(df_case_Eu, df_NY_training)
+df_case=df_case[,c("Countries.and.territories","DateRep","Cases","Deaths")]
+df_case=df_case[which(df_case$Countries.and.territories %in% countries),]
+
+
+### same the rownames of d, and replaece d by df_case
+names_d=names(d)
+d=df_case
+d$date=format(as.Date(d$DateRep,format="%d/%m/%Y"),format="%Y-%m-%d")
+############## ####
+## get IFR and population from same file
+ifr.by.country = read.csv("/Users/yiwang/Dropbox/cvd/cvd_N/model/data/pop_ifr_edited.csv")
+ifr.by.country = ifr.by.country[which(ifr.by.country$country %in% countries_sub),]
+ifr.by.country$country = as.character(ifr.by.country[,2])
+# ifr.by.country$country[ifr.by.country$country == "United Kingdom"] = "United_Kingdom"
+
+serial.interval = read.csv("data/serial_interval.csv") ##?
+
+N2 = 100 
+#covariates = read.csv('./data/interventions.csv', stringsAsFactors = FALSE)
+
+covariates = read.csv('/Users/yiwang/Dropbox/cvd/cvd_N/model/data/interventions_edited.csv', stringsAsFactors = FALSE)
+covariates = covariates[which(covariates$Country %in% countries_sub),]
+#########
+names_covariates = c('Schools + Universities','Self-isolating if ill', 'Public events', 'Lockdown', 'Social distancing encouraged')
+covariates <- covariates %>%
+  filter((Type %in% names_covariates))
+covariates <- covariates[,c(1,2,4)]
+covariates <- spread(covariates, Type, Date.effective)
+names(covariates) <- c('Country','lockdown', 'public_events', 'schools_universities','self_isolating_if_ill', 'social_distancing_encouraged')
+covariates <- covariates[c('Country','schools_universities', 'self_isolating_if_ill', 'public_events', 'lockdown', 'social_distancing_encouraged')]
+covariates$schools_universities <- as.Date(covariates$schools_universities, format = "%d.%m.%Y")
+covariates$lockdown <- as.Date(covariates$lockdown, format = "%d.%m.%Y")
+covariates$public_events <- as.Date(covariates$public_events, format = "%d.%m.%Y")
+covariates$self_isolating_if_ill <- as.Date(covariates$self_isolating_if_ill, format = "%d.%m.%Y")
+covariates$social_distancing_encouraged <- as.Date(covariates$social_distancing_encouraged, format = "%d.%m.%Y")
+## using covariates as dates we want
+covariates$schools_universities[covariates$schools_universities > covariates$lockdown] <- covariates$lockdown[covariates$schools_universities > covariates$lockdown]
+covariates$public_events[covariates$public_events > covariates$lockdown] <- covariates$lockdown[covariates$public_events > covariates$lockdown]
+covariates$social_distancing_encouraged[covariates$social_distancing_encouraged > covariates$lockdown] <- covariates$lockdown[covariates$social_distancing_encouraged > covariates$lockdown]
+covariates$self_isolating_if_ill[covariates$self_isolating_if_ill > covariates$lockdown] <- covariates$lockdown[covariates$self_isolating_if_ill > covariates$lockdown]
+
+forecast = 0
+
+
+dates = list()
+reported_cases = list()
+# stan_data = list(M=length(countries),N=NULL,covariate1=NULL,covariate2=NULL,covariate3=NULL,covariate4=NULL,covariate5=NULL,covariate6=NULL,deaths=NULL,f=NULL,
+#                  N0=6,cases=NULL,SI=serial.interval$fit[1:N2],
+#                  EpidemicStart = NULL, pop = NULL) # N0 = 6 to make it consistent with Rayleigh
+# 
+
+######### added, Yi
+######### 
+
+deaths_by_country = list()
+
+# various distributions required for modeling
+mean1 = 5.1; cv1 = 0.86; # infection to onset
+mean2 = 18.8; cv2 = 0.45 # onset to death
+x1 = rgammaAlt(1e7,mean1,cv1) # infection-to-onset distribution
+x2 = rgammaAlt(1e7,mean2,cv2) # onset-to-death distribution
+
+ecdf.saved = ecdf(x1+x2)
+date_model=list();  count=1
+
+
+stan_data = list(M=length(countries_sub),N=NULL,covariate1=NULL,covariate2=NULL,
+                 covariate3=NULL,covariate4=NULL,covariate5=NULL,covariate6=NULL,
+                 deaths=NULL,f=NULL, N0=6,cases=NULL,SI=serial.interval$fit[1:N2],
+                 EpidemicStart = NULL, pop = NULL) # N0 = 6 to make it consistent with Rayleigh
+
+for(Country in countries) {
+  IFR=ifr.by.country$ifr[ifr.by.country$country == Country]
+  
+  covariates1 <- covariates[covariates$Country == Country, c(2,3,4,5,6)]
+  
+  d1_pop = ifr.by.country[ifr.by.country$country==Country,]
+  d1=d[d$Countries.and.territories==Country,]
+  
+  ##### added by Yi
+  names_extract=names_d[c(1,5,6,7)]
+  d1 = d[d$Countries.and.territories==Country,names_extract]
+  
+  ##### 
+  
+  d1$date = as.Date(d1$DateRep,format='%d/%m/%Y')
+  # d1$t = decimal_date(d1$date) # edited by Yi
+  # d1=d1[order(d1$t),] # edited by Yi
+  
+  date_min <- dmy('31/12/2019') 
+  if (as.Date(d1$DateRep[1], format='%d/%m/%Y') > as.Date(date_min, format='%d/%m/%Y')){
+    print(paste(Country,'In padding'))
+    pad_days <- as.Date(d1$DateRep[1], format='%d/%m/%Y') - date_min
+    pad_dates <- date_min + days(1:pad_days[[1]]-1)
+    # padded_data <- data.frame("Countries.and.territories" = rep(Country, pad_days),
+    #                           "DateRep" = format(pad_dates, '%d/%m/%Y'),
+    #                           "t" = decimal_date(as.Date(pad_dates,format='%d/%m/%Y')),
+    #                           "date" = as.Date(pad_dates,format='%d/%m/%Y'),
+    #                           "Cases" = as.integer(rep(0, pad_days)),
+    #                           "Deaths" = as.integer(rep(0, pad_days)),
+    #                           stringsAsFactors=F)
+    # changed by Yi
+    padded_data <- data.frame("DateRep" = format(pad_dates, '%d/%m/%Y'),
+                              "Cases" = as.integer(rep(0, pad_days)),
+                              "Deaths" = as.integer(rep(0, pad_days)),
+                              "Countries.and.territories" = rep(Country, pad_days),
+                              
+                              "date" = as.Date(pad_dates,format='%d/%m/%Y'))
+    # d1 <- bind_rows(padded_data, d1)#edited by Yi
+    d1 <- rbind(padded_data, d1)#edited by Yi
+  }
+  
+  index = which(d1$Cases>0)[1]
+  index1 = which(cumsum(d1$Deaths)>=10)[1] # also 5
+  index2 = index1-30
+ 
+  print(sprintf("First non-zero cases is on day %d, and 30 days before 10 deaths is day %d",index,index2))
+  d1=d1[index2:nrow(d1),]
+  
+  #### added by Yi
+  date_model[[count]]=d1$date
+  count=count+1
+  #### 
+  
+  ## stan_data$EpidemicStart = c(stan_data$EpidemicStart,index1+1-index2) ##by Yi
+  ## added by Yi
+  stan_data$EpidemicStart = c(stan_data$EpidemicStart,index2)
+  #####
+  stan_data$pop = c(stan_data$pop, d1_pop$popt)
+  
+  
+  for (ii in 1:ncol(covariates1)) {
+    covariate = names(covariates1)[ii]
+    d1[covariate] <- (as.Date(d1$DateRep, format='%d/%m/%Y') >= as.Date(covariates1[1,covariate]))*1  # should this be > or >=?
+  }
+  
+  dates[[Country]] = d1$date
+  # hazard estimation
+  N = length(d1$Cases)
+  print(sprintf("%s has %d days of data",Country,N))
+  forecast = N2 - N
+  if(forecast < 0) {
+    print(sprintf("%s: %d", Country, N))
+    print("ERROR!!!! increasing N2")
+    N2 = N
+    forecast = N2 - N
+  }
+  
+  # IFR is the overall probability of dying given infection
+  convolution = function(u) (IFR * ecdf.saved(u))
+
+  f = rep(0,N2) # f is the probability of dying on day i given infection
+  f[1] = (convolution(1.5) - convolution(0))
+  for(i in 2:N2) {
+    f[i] = (convolution(i+.5) - convolution(i-.5)) 
+  }
+  
+  reported_cases[[Country]] = as.vector(as.numeric(d1$Cases))
+  deaths=c(as.vector(as.numeric(d1$Deaths)),rep(-1,forecast))
+  cases=c(as.vector(as.numeric(d1$Cases)),rep(-1,forecast))
+  deaths_by_country[[Country]] = as.vector(as.numeric(d1$Deaths))
+  covariates2 <- as.data.frame(d1[, colnames(covariates1)])
+  # x=1:(N+forecast)
+  covariates2[N:(N+forecast),] <- covariates2[N,]
+  
+  ## append data
+  stan_data$N = c(stan_data$N,N)
+  # stan_data$x = cbind(stan_data$x,x)
+  stan_data$covariate1 = cbind(stan_data$covariate1,covariates2[,1])
+  stan_data$covariate2 = cbind(stan_data$covariate2,covariates2[,2])
+  stan_data$covariate3 = cbind(stan_data$covariate3,covariates2[,3])
+  stan_data$covariate4 = cbind(stan_data$covariate4,covariates2[,4])
+  stan_data$covariate5 = cbind(stan_data$covariate5,covariates2[,4])
+  stan_data$covariate6 = cbind(stan_data$covariate6,covariates2[,5])
+  stan_data$f = cbind(stan_data$f,f)
+  stan_data$deaths = cbind(stan_data$deaths,deaths)
+  stan_data$cases = cbind(stan_data$cases,cases)
+  
+  stan_data$N2=N2
+  stan_data$x=1:N2
+  if(length(stan_data$N) == 1) {
+    stan_data$N = as.array(stan_data$N)
+  }
+}
+
+# create the `any intervention` covariate
+stan_data$covariate4 = 1*as.data.frame((stan_data$covariate1+
+                                          stan_data$covariate2+
+                                          stan_data$covariate3+
+                                          stan_data$covariate5+
+                                          stan_data$covariate6) >= 1)
+DEBUG=TRUE
+# if(DEBUG) {
+#   for(i in 1:length(countries)) {
+#     write.csv(
+#       data.frame(date=dates[[i]],
+#                  `school closure`=stan_data$covariate1[1:stan_data$N[i],i],
+#                  `self isolating if ill`=stan_data$covariate2[1:stan_data$N[i],i],
+#                  `public events`=stan_data$covariate3[1:stan_data$N[i],i],
+#                  `government makes any intervention`=stan_data$covariate4[1:stan_data$N[i],i],
+#                  `lockdown`=stan_data$covariate5[1:stan_data$N[i],i],
+#                  `social distancing encouraged`=stan_data$covariate6[1:stan_data$N[i],i]),
+#       file=sprintf("results/%s-check-dates.csv",countries[i]),row.names=F)
+#   }
+# }
+
+options(mc.cores = parallel::detectCores())
+rstan_options(auto_write = TRUE)
+m = stan_model(paste0('stan-models/',StanModel,'.stan')) ##model
+
+##########################################################################################
+##########################################################################################
+##########################################################################################
+######## added by Yi
+DEBUG=TRUE
+########
+######## added by Yi
+#  stan_data$pop = c(6.036e7, 6.699e7,4.694e7) 
+#  Ns = c(Italy=6.036e7,France=6.699e7,Spain=4.694e7) # population size
+########
+set.seed(222)
+if(DEBUG) {
+  #fit = sampling(m,data=stan_data,iter=20,warmup=10,chains=2)
+  fit = sampling(m,data=stan_data,iter=100,warmup=50,chains=2)
+  #fit = sampling(m,data=stan_data,iter=40,warmup=20,chains=2)
+} else if (FULL) {
+  fit = sampling(m,data=stan_data,iter=4000,warmup=2000,chains=4,thin=4,control = list(adapt_delta = 0.95, max_treedepth = 10))
+} else {
+  fit = sampling(m,data=stan_data,iter=200,warmup=100,chains=4,thin=4,control = list(adapt_delta = 0.95, max_treedepth = 10))
+}
+
+out = rstan::extract(fit)
+prediction = out$prediction
+estimated.deaths = out$E_deaths
+estimated.deaths.cf = out$E_deaths0
+# save(fit,prediction,dates,reported_cases,deaths_by_country,countries,
+#      estimated.deaths,estimated.deaths.cf,out,covariates,file=name_save)
+
+list(reported_cases=reported_cases,prediction=prediction,
+     EpidemicStart=stan_data$EpidemicStart,
+     date_latest=d$DateRep[length(d$DateRep)],
+     date_model =  date_model,
+     deaths_by_country=deaths_by_country,
+     # estimated.deaths=estimated.deaths,
+     # estimated.deaths.cf=estimated.deaths.cf,
+     fit=fit,out=out)
+  
