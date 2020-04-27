@@ -1,6 +1,5 @@
 #install_github("lilywang1988/eSIR")
 library(devtools)
-install_github("lilywang1988/eSIR")
 library(eSIR)
 library(rjags)
 library(ggplot2)
@@ -23,6 +22,7 @@ lag=14 # c(21,14,7) number of days before peak, i.e. the last day in the trainin
 setwd(paste0('~/Dropbox/Covid-19/eSIR-result/',region.name))
  
 # ------------------------ Data Creation ------------------------
+
 ### death
 county_level_url_JHU = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv"
 data_county_level_JHU = read.csv(county_level_url_JHU, na.strings = c("NA"), header = T)
@@ -104,7 +104,8 @@ Y <- NI_complete/N - R
 # the proportion of death in removed
 death_in_R = as.numeric(dat.train[length(R),'F']/RI_complete[length(R)])
 
-# ------------------------ Plotting the Observed data, lockdown dates, etc. ------------------------
+# ------------------------ Plot the Observed data, lockdown dates, etc. ------------------------
+
 # daily cases, death and recovered
 daily.train = rbind(NA,pmax(t(sapply(1:(nrow(dat.train)-1),function(x){dat.train[x+1,]-dat.train[x,]})),0))
 daily.validation = rbind(pmax(dat[nrow(daily.train),]-dat[nrow(daily.train)-1,],0),pmax(dat[nrow(daily.train)+1,]-dat[nrow(daily.train),],0),pmax(t(sapply(1:(nrow(dat.validation)-1),function(x){dat.validation[x+1,]-dat.validation[x,]})),0))
@@ -140,7 +141,8 @@ legend('topleft', legend=c("Confirmed Cases Training","Confirmed Cases Validatio
        col=c(rep('black',2),rep('red',2),rep('blue',2)), lty=c(1,2,1,2,1,2), cex=0.7)
 
 
-# ------------------------ Fitting eSIR model ------------------------
+# ------------------------ Fit eSIR model ------------------------
+
 # model fitting and parameter tuning using the 1-week data after the last day of training data
 ress0=list()
 rmse = numeric() # use rmse to select parameters
@@ -170,94 +172,96 @@ pi.min = candidates[l,'pi.min']
 res.exp <- ress0[[l]]
 decay.period = res.exp$decay.period # the duration of transmission rate decay
 
-# ------------------------ Generate plots ------------------------
+# ------------------------ Create plots ------------------------
+
 T_fin = 200 - 1
-    ress = list()
-    ress[[1]] = res.exp
-    begin <- chron(dates. = start.date) + 1 # daily cases: starting from the next day
-    chron_ls <- chron(begin:(begin + T_fin - 1))
-    end <- chron(begin:(begin + T_fin))[T_fin]
-    
-    temp = ress[[1]]$data_comp[1:(T_fin+1),'mean']
-    tempR=ress[[1]]$data_comp_R[1:(T_fin+1),'mean']
-    daily.pred.I = c(sapply(1:(length(temp)-1),function(x){temp[x+1]-temp[x]}))*N
-    daily.pred.R = c(sapply(1:(length(tempR)-1),function(x){tempR[x+1]-tempR[x]}))*N
-    daily.pred.Itotal = daily.pred.I + daily.pred.R
-    
-    # upper bound:
-    temp = ress[[1]]$data_comp[1:(T_fin+1),'upper']
-    tempR=ress[[1]]$data_comp_R[1:(T_fin+1),'upper']
-    daily.upper.I = c(sapply(1:(length(temp)-1),function(x){temp[x+1]-temp[x]}))*N # tempR[2]-tempR[1]
-    daily.upper.R = c(sapply(1:(length(tempR)-1),function(x){tempR[x+1]-tempR[x]}))*N # tempR[2]-tempR[1]
-    daily.upper.Itotal = daily.upper.I + daily.upper.R
-    daily.upper.Itotal = pmax(0,daily.upper.Itotal)
-    # lower bound:
-    temp = ress[[1]]$data_comp[1:(T_fin+1),'lower']
-    tempR=ress[[1]]$data_comp_R[1:(T_fin+1),'lower']
-    daily.lower.I = c(sapply(1:(length(temp)-1),function(x){temp[x+1]-temp[x]}))*N # tempR[2]-tempR[1]
-    daily.lower.R = c(sapply(1:(length(tempR)-1),function(x){tempR[x+1]-tempR[x]}))*N # tempR[2]-tempR[1]
-    daily.lower.Itotal = daily.lower.I + daily.lower.R
-    daily.lower.Itotal = pmax(0,daily.lower.Itotal)
+ress = list()
+ress[[1]] = res.exp
+begin <- chron(dates. = start.date) + 1 # daily cases: starting from the next day
+chron_ls <- chron(begin:(begin + T_fin - 1))
+end <- chron(begin:(begin + T_fin))[T_fin]
 
-    dat.table=data.frame(t = 1:T_fin,
-                         x = c((daily[-1,'I']),rep(NA,T_fin+1-nrow(dat))),
-                         y1 = daily.pred.Itotal, # the unsmoothed prediction
-                         y1.upper = daily.upper.Itotal,
-                         y1.lower = daily.lower.Itotal,
-                         phase=c(rep('Training',nrow(dat.train)-1),rep('Validation',nrow(dat.validation)),rep('Future',T_fin+1-nrow(dat))))
-    tr.table = dat.table[1:(nrow(daily.train)-1),]
-    va.table = dat.table[(nrow(daily.train)-1):(nrow(daily.train)-1+lag.val),]
-    ho.table = dat.table[(nrow(daily.train)-1+lag.val):(nrow(dat)-1),]
-    proj.peak.t = which.max(daily.pred.Itotal)
-    
-    colors <- c("Training" = "black", "Validation" = "cyan4", "Holdout" = "blue", "Projection" = "maroon")
-    
-    plot1 <- ggplot() + 
-      labs(title = substitute(paste(pi,"(t) = exp(-",lambda[0],"t) >= ",v2, ",  ",
-                                    lambda[0], " = ", v1),
-                              list(v1 = as.numeric(lambda0), v2 = pi.min)),
-           subtitle = substitute(paste(R[0]," = ",v1,",  R.min = ",v2,"  Decay period: ",v3," days"),
-                                 list(v1 = as.numeric(formatC(as.numeric(ress[[1]]$out_table['R0_p_mean']),digits=2,format='f')), 
-                                      v2 = formatC(as.numeric(ress[[1]]$out_table['R0_p_mean']*pi.min),digits=2,format='f'),
-                                      v3 = decay.period))) + 
-      geom_line(data = dat.table, 
-                aes(x = t, y = y1, color = 'Projection'), lty='solid') + 
-      geom_line(data = tr.table, 
-                aes(x=t, y=x, color = 'Training')) + 
-      geom_line(data = va.table, 
-                aes(x=t, y=x, color = 'Validation')) +
-      geom_line(data = ho.table, 
-                aes(x=t, y=x, color = 'Holdout')) +
-      ## lockdown
-      geom_vline(xintercept = change_t+0.2, 
-                 color = "black", lty = 'twodash', show.legend = F) + 
-      annotate(geom = "text", 
-               label = paste0('Intervention \n ',as.character(chron(chron_ls[change_t], format = "m/d/y"))), 
-               x = change_t - 3, y = max(dat.table[,'y1']) * seq(1/5,1/5*length(change_time),by=1/5), color = "black") + 
-      # projected peak
-      geom_vline(xintercept = proj.peak.t, 
-                 color = "maroon", show.legend = F) + 
-      annotate(geom = "text", 
-               label = paste0('SIR Peak \n ',as.character(chron(chron_ls[proj.peak.t], format = "m/d/y"))), 
-               x = proj.peak.t + 10, y = max(dat.table[,'y1']) * 1/2, color = "maroon") +
-      # true peak
-      geom_vline(xintercept = peak_t, 
-                 color = "blue", show.legend = F) +
-      annotate(geom = "text", 
-               label = paste0('True Peak \n ',as.character(chron(chron_ls[as.numeric(peak_t)], format = "m/d/y"))), 
-               x = as.numeric(peak_t), y = max(dat.table[,'x'],na.rm=T) * 3/4, color = "blue") + 
-      theme(plot.title = element_text(hjust = 0.5,size = 15, face = "bold"), 
-            plot.subtitle = element_text(hjust = 0.5, size = 15), 
-            axis.text.x = element_text(angle = 45, hjust = 1), 
-            axis.text = element_text(size = 11), axis.title = element_text(size = 13)) + 
-      scale_x_continuous(labels = as.character(chron_ls)[seq(1, T_fin, 20)], breaks = seq(1, T_fin, 20))  +
-      labs(x = "Date",
-           y = "Confirmed Cases Per Day",
-           color = "") +
-      scale_color_manual(values = colors)
-    plot1
+temp = ress[[1]]$data_comp[1:(T_fin+1),'mean']
+tempR=ress[[1]]$data_comp_R[1:(T_fin+1),'mean']
+daily.pred.I = c(sapply(1:(length(temp)-1),function(x){temp[x+1]-temp[x]}))*N
+daily.pred.R = c(sapply(1:(length(tempR)-1),function(x){tempR[x+1]-tempR[x]}))*N
+daily.pred.Itotal = daily.pred.I + daily.pred.R
 
-# ------------------------ Write .csv output ------------------------
+# upper bound:
+temp = ress[[1]]$data_comp[1:(T_fin+1),'upper']
+tempR=ress[[1]]$data_comp_R[1:(T_fin+1),'upper']
+daily.upper.I = c(sapply(1:(length(temp)-1),function(x){temp[x+1]-temp[x]}))*N # tempR[2]-tempR[1]
+daily.upper.R = c(sapply(1:(length(tempR)-1),function(x){tempR[x+1]-tempR[x]}))*N # tempR[2]-tempR[1]
+daily.upper.Itotal = daily.upper.I + daily.upper.R
+daily.upper.Itotal = pmax(0,daily.upper.Itotal)
+# lower bound:
+temp = ress[[1]]$data_comp[1:(T_fin+1),'lower']
+tempR=ress[[1]]$data_comp_R[1:(T_fin+1),'lower']
+daily.lower.I = c(sapply(1:(length(temp)-1),function(x){temp[x+1]-temp[x]}))*N # tempR[2]-tempR[1]
+daily.lower.R = c(sapply(1:(length(tempR)-1),function(x){tempR[x+1]-tempR[x]}))*N # tempR[2]-tempR[1]
+daily.lower.Itotal = daily.lower.I + daily.lower.R
+daily.lower.Itotal = pmax(0,daily.lower.Itotal)
+
+dat.table=data.frame(t = 1:T_fin,
+                     x = c((daily[-1,'I']),rep(NA,T_fin+1-nrow(dat))),
+                     y1 = daily.pred.Itotal, # the unsmoothed prediction
+                     y1.upper = daily.upper.Itotal,
+                     y1.lower = daily.lower.Itotal,
+                     phase=c(rep('Training',nrow(dat.train)-1),rep('Validation',nrow(dat.validation)),rep('Future',T_fin+1-nrow(dat))))
+tr.table = dat.table[1:(nrow(daily.train)-1),]
+va.table = dat.table[(nrow(daily.train)-1):(nrow(daily.train)-1+lag.val),]
+ho.table = dat.table[(nrow(daily.train)-1+lag.val):(nrow(dat)-1),]
+proj.peak.t = which.max(daily.pred.Itotal)
+
+colors <- c("Training" = "black", "Validation" = "cyan4", "Holdout" = "blue", "Projection" = "maroon")
+
+plot1 <- ggplot() + 
+  labs(title = substitute(paste(pi,"(t) = exp(-",lambda[0],"t) >= ",v2, ",  ",
+                                lambda[0], " = ", v1),
+                          list(v1 = as.numeric(lambda0), v2 = pi.min)),
+       subtitle = substitute(paste(R[0]," = ",v1,",  R.min = ",v2,"  Decay period: ",v3," days"),
+                             list(v1 = as.numeric(formatC(as.numeric(ress[[1]]$out_table['R0_p_mean']),digits=2,format='f')), 
+                                  v2 = formatC(as.numeric(ress[[1]]$out_table['R0_p_mean']*pi.min),digits=2,format='f'),
+                                  v3 = decay.period))) + 
+  geom_line(data = dat.table, 
+            aes(x = t, y = y1, color = 'Projection'), lty='solid') + 
+  geom_line(data = tr.table, 
+            aes(x=t, y=x, color = 'Training')) + 
+  geom_line(data = va.table, 
+            aes(x=t, y=x, color = 'Validation')) +
+  geom_line(data = ho.table, 
+            aes(x=t, y=x, color = 'Holdout')) +
+  ## lockdown
+  geom_vline(xintercept = change_t+0.2, 
+             color = "black", lty = 'twodash', show.legend = F) + 
+  annotate(geom = "text", 
+           label = paste0('Intervention \n ',as.character(chron(chron_ls[change_t], format = "m/d/y"))), 
+           x = change_t - 3, y = max(dat.table[,'y1']) * seq(1/5,1/5*length(change_time),by=1/5), color = "black") + 
+  # projected peak
+  geom_vline(xintercept = proj.peak.t, 
+             color = "maroon", show.legend = F) + 
+  annotate(geom = "text", 
+           label = paste0('SIR Peak \n ',as.character(chron(chron_ls[proj.peak.t], format = "m/d/y"))), 
+           x = proj.peak.t + 10, y = max(dat.table[,'y1']) * 1/2, color = "maroon") +
+  # true peak
+  geom_vline(xintercept = peak_t, 
+             color = "blue", show.legend = F) +
+  annotate(geom = "text", 
+           label = paste0('True Peak \n ',as.character(chron(chron_ls[as.numeric(peak_t)], format = "m/d/y"))), 
+           x = as.numeric(peak_t), y = max(dat.table[,'x'],na.rm=T) * 3/4, color = "blue") + 
+  theme(plot.title = element_text(hjust = 0.5,size = 15, face = "bold"), 
+        plot.subtitle = element_text(hjust = 0.5, size = 15), 
+        axis.text.x = element_text(angle = 45, hjust = 1), 
+        axis.text = element_text(size = 11), axis.title = element_text(size = 13)) + 
+  scale_x_continuous(labels = as.character(chron_ls)[seq(1, T_fin, 20)], breaks = seq(1, T_fin, 20))  +
+  labs(x = "Date",
+       y = "Confirmed Cases Per Day",
+       color = "") +
+  scale_color_manual(values = colors)
+plot1
+
+# ------------------------ Write output .csv file ------------------------
+
 output = data.frame(time = 1:T_fin,
                     date = chron_ls,
                     observed = c((daily[-1,'I']),rep(NA,T_fin+1-nrow(dat))),
