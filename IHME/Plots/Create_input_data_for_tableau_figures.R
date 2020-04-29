@@ -302,6 +302,7 @@ df_all2$Source[df_all2$Source == "1"] = "Predicted"
 df_all2$Source[df_all2$Source == "2"] = "Training"
 df_all2$Source[df_all2$Source == "3"] = "Observed"
 
+
 IHME_training = tmp[tmp$date >= as.Date("2020-03-16") & tmp$date <= as.Date("2020-03-24"),1:2]
 IHME_reported = tmp[tmp$date >= as.Date("2020-03-24") & tmp$date <= as.Date("2020-04-22"),1:2]
 IHME_predicted = read.xlsx("~/Dropbox/COVID_19/results/IHME/NY/Plots_medium_article/df14_NY_pred_CI.xlsx")
@@ -313,14 +314,6 @@ df_all3$Source[df_all3$Source == "2"] = "Training"
 df_all3$Source[df_all3$Source == "3"] = "Observed"
 
 
-# h <- ggplot(data=df_all3,aes(x=date, y = deaths))
-# plot1 <- h + 
-#   geom_ribbon(aes(x=date,ymin=PI_low,ymax=PI_upper, group = Source),fill = "grey70") +
-#   geom_line(aes(y=deaths,color=Source, group = Source)) + theme(legend.position = "none") + theme_bw() + 
-#   labs(y="Deaths per day")
-# plot1
-
-
 df_final = bind_rows(df_all,df_all2,df_all3,.id = "Training")
 df_final$Training[df_final$Training == "1"] = "Till peak"
 df_final$Training[df_final$Training == "2"] = "7 days before peak"
@@ -328,22 +321,3 @@ df_final$Training[df_final$Training == "3"] = "14 days before peak"
 df_final = df_final[c(1,2,4,5,9,10)]
 df_final$PI_low[which(df_final$PI_low <= 0)] = 0
 write.xlsx(df_final,"~/Dropbox/COVID_19/results/IHME/NY/Plots_medium_article/df_NY_cumulative_CI_tableau.xlsx")
-
-
-
-
-#-----Maharashtra----#
-
-data_maharashtra = read.xlsx("~/Dropbox/COVID_19/data/IHME/India/df_Maharashtra_datasettillApril22.xlsx")
-tmp = data_maharashtra 
-tmp$Date = convertToDate(tmp$Date)
-#tmp = tmp %>% mutate(deaths = deaths - lag(deaths, 1))
-IHME_training = tmp[tmp$date <= as.Date("2020-04-23"),]
-IHME_training = IHME_training %>% mutate(deaths = cumulative_deaths-lag(cumulative_deaths,1))
-IHME_predicted = read.xlsx("~/Dropbox/COVID_19/results/IHME/India/Plots_medium_article/df_MH_pred_CI.xlsx")
-colnames(IHME_predicted)[3] <- "deaths"
-IHME_predicted$date = as.Date(IHME_predicted$date)
-df_all <- bind_rows(IHME_predicted[-1,],IHME_training,IHME_reported,.id = "Source")
-df_all$Source[df_all$Source == "1"] = "Predicted"
-df_all$Source[df_all$Source == "2"] = "Training"
-df_all$Source[df_all$Source == "3"] = "Observed"
