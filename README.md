@@ -32,7 +32,7 @@ Source code for validation and projection of the following Covid-19 models:
 
 > `/IHME/New York State/`
 
-       `IHME_data_creation_NYstate.R`   download data for New York state.
+       ```IHME_data_creation_NYstate.R```   download data for New York state.
       
        `IHME_model_validation_NYstate.py`   python code for IHME model fitting on New York data.
       
