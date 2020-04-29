@@ -1,3 +1,14 @@
+###### For New York state data, we found that the county-level data from JHU:CSSE has an "Unassigned" category, 
+###### the number of cumulative deaths for which decreases on some dates, which is hard to explain. 
+###### We therefore use the state-level data from New York Times for our analysis on New York state:
+###### https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv
+
+###### Currently we haven't found any reliable data sources that provide the number of daily recovery for New York state 
+###### (or any other US state). We therefore estimate the number of daily recovery in New York by first calculating the 
+###### daily death:recovery ratio in the whole US using Hopkins country-level data 
+###### https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv 
+###### then obtain the estimated daily recovery using this ratio and the death data from New York Times.
+
 #install_github("lilywang1988/eSIR")
 library(devtools)
 library(eSIR)
@@ -53,7 +64,7 @@ colnames(data_county_level_JHU) = c(colnames(data_county_level_JHU)[1:4],substr(
 
 # only include data until 4.2. This date will not have impact on the validation results 
 # since we only use data before peak (3.21) for model training and parameter tuning.
-dat.length = which(names(F.region)=='4.21.20')
+dat.length = which(names(F.region)=='4.22.20')
 
 region.rows = which(data_county_level_JHU[,'Country.Region']==region.name)
 if (length(region.rows) == 1) 
@@ -81,56 +92,23 @@ ratio.d.r = F.region/R.region
 region.name = 'New York'
 setwd(paste0('~/Dropbox/Covid-19/eSIR-result/',region.name))
 
-county_level_url_JHU = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv"
+county_level_url_JHU = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv"
 data_county_level_JHU = read.csv(county_level_url_JHU, na.strings = c("NA"), header = T)
-colnames(data_county_level_JHU) = c(colnames(data_county_level_JHU)[1:11],substr(colnames(data_county_level_JHU)[12:ncol(data_county_level_JHU)],2,20))
-region.rows = which(data_county_level_JHU[,'Province_State']==region.name)
-if (length(region.rows) == 1) 
-{
-  I.region = data_county_level_JHU[data_county_level_JHU[,'Province_State']==region.name,]
-  I.region = I.region[12:length(I.region)]
-  I.region = colSums(I.region)
-  I.region = I.region[(which(names(I.region)==start.date)):(length(I.region))]
-}
-if (length(region.rows) > 1) 
-{
-  I.region = data_county_level_JHU[region.rows,]
-  I.region = I.region[12:length(I.region)]
-  I.region = colSums(I.region)
-  I.region = I.region[(which(names(I.region)==start.date)):(length(I.region))]
-}
+region.rows = which(data_county_level_JHU[,'state']==region.name)
+I.region = data_county_level_JHU[region.rows,'cases']
+names(I.region) = data_county_level_JHU[region.rows,'date']
+I.region = I.region[which(names(I.region)== as.Date(start.date,format="%m.%d.%y")):length(I.region)]
 
 ### death
-if (region.name != 'New York'){
-  county_level_url_JHU = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_US.csv"
-  data_county_level_JHU = read.csv(county_level_url_JHU, na.strings = c("NA"), header = T)
-  colnames(data_county_level_JHU) = c(colnames(data_county_level_JHU)[1:12],substr(colnames(data_county_level_JHU)[13:ncol(data_county_level_JHU)],2,20))
-  region.rows = which(data_county_level_JHU[,'Province_State']==region.name)
-  if (length(region.rows) == 1) 
-  {
-    F.region = data_county_level_JHU[data_county_level_JHU[,'Province_State']==region.name,]
-    F.region = F.region[12:length(F.region)]
-    F.region = colSums(F.region)
-    F.region = F.region[(which(names(F.region)==start.date)):(length(F.region))]
-  }
-  if (length(region.rows) > 1) 
-  {
-    F.region = data_county_level_JHU[region.rows,]
-    F.region = F.region[12:length(F.region)]
-    F.region = colSums(F.region)
-    F.region = F.region[(which(names(F.region)==start.date)):(length(F.region))]
-  }
-}
-# we use new york times data instead of Hopkins data for daily death in New York, because 
-# there seems to be a weird peak in daily cases in Hopkins Data around 4.16 that cannot be explained.
-if (region.name == 'New York'){
-  county_level_url_JHU = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv"
-  data_county_level_JHU = read.csv(county_level_url_JHU, na.strings = c("NA"), header = T)
-  region.rows = which(data_county_level_JHU[,'state']==region.name)
-  F.region = data_county_level_JHU[region.rows,'deaths']
-  names(F.region) = data_county_level_JHU[region.rows,'date']
-  F.region = F.region[which(names(F.region)== as.Date(start.date,format="%m.%d.%y")):length(F.region)]
-}
+
+# we use new york times data instead of Hopkins data for daily death in New York because 
+# there are some issues with the daily cases in Hopkins Data for the "Unassigned" county in New York state
+county_level_url_JHU = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv"
+data_county_level_JHU = read.csv(county_level_url_JHU, na.strings = c("NA"), header = T)
+region.rows = which(data_county_level_JHU[,'state']==region.name)
+F.region = data_county_level_JHU[region.rows,'deaths']
+names(F.region) = data_county_level_JHU[region.rows,'date']
+F.region = F.region[which(names(F.region)== as.Date(start.date,format="%m.%d.%y")):length(F.region)]
 
 I.region = I.region[1:dat.length]
 F.region = F.region[1:dat.length]
