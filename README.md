@@ -24,35 +24,35 @@ Source code for validation and projection of the following Covid-19 models:
 #### IHME
 > `/IHME/Italy/`
 
-      1. `IHME_data_creation_Italy.R`   download data for Italy.
+      1. IHME_data_creation_Italy.R   download data for Italy.
       
-      2. `IHME_model_validation_Italy.py`   python code for IHME model fittiing on Italy data.
+      2. IHME_model_validation_Italy.py   python code for IHME model fittiing on Italy data.
       
-      3. `IHME_prediction_confidence_interval_Italy.R`   calcuate the confidence interval for the predicted cumulative death in Italy.
+      3. IHME_prediction_confidence_interval_Italy.R   calcuate the confidence interval for the predicted cumulative death in Italy.
 
 > `/IHME/New York State/`
 
-       ```IHME_data_creation_NYstate.R```   download data for New York state.
+       IHME_data_creation_NYstate.R   download data for New York state.
       
-       `IHME_model_validation_NYstate.py`   python code for IHME model fitting on New York data.
+       IHME_model_validation_NYstate.py   python code for IHME model fitting on New York data.
       
-       `IHME_prediction_confidence_interval_NYstate.R`   calcuate the confidence interval for the predicted cumulative death in New York state.
+       IHME_prediction_confidence_interval_NYstate.R   calcuate the confidence interval for the predicted cumulative death in New York state.
 
 > `/IHME/Plots/`
       
-      `Create_input_data_for_tableau_figures.R`   code for generating the input for Tableau to create the IHME plots in Figure 1.
+      Create_input_data_for_tableau_figures.R   code for generating the input for Tableau to create the IHME plots in Figure 1.
 #### ICL
 
 
 #### eSIR
 
-      1. `/eSIR/Italy/Validation_Italy.R`   code for downloading data, eSIR model fitting and generating the input for Tableau for Italy.
+      1. /eSIR/Italy/Validation_Italy.R   code for downloading data, eSIR model fitting and generating the input for Tableau for Italy.
       
-      2. `/eSIR/New York State/Validation_NYstate.R`   code for analysis on New York state.
+      2. /eSIR/New York State/Validation_NYstate.R   code for analysis on New York state.
       
-      3. `/eSIR/Plots/Create_input_data_for_tableau_figures.R`   code for generating the input for Tableau to create Figure 2.
+      3. /eSIR/Plots/Create_input_data_for_tableau_figures.R   code for generating the input for Tableau to create Figure 2.
       
-      4. `/eSIR/R_functions/eSIR_modified_functions.R`   modified eSIR function used in our analysis.
+      4. /eSIR/R_functions/eSIR_modified_functions.R   modified eSIR function used in our analysis.
 
 
 
