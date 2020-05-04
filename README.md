@@ -8,6 +8,8 @@ Source code for validation and projection of the following Covid-19 models:
 
 * Homepage: https://covid19.healthdata.org/
 * Code: https://github.com/ihmeuw-msca/CurveFit
+* References:
+   1. COVID, I. and Murray, C.J., 2020. Forecasting the impact of the first wave of the COVID-19 pandemic on hospital demand and deaths for the USA and European Economic Area countries. medRxiv.
 
 #### `ICL` (Imperial College London)
 
