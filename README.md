@@ -23,36 +23,41 @@ Source code for validation and projection of the following Covid-19 models:
 
 ### IHME
 #### Validation on Italy
-    1. Create training data  `/IHME/Italy/Data_creation/IHME_data_creation.R`
-    2. IHME model fitting  `/IHME/Italy/Model_validation/model_validation_Italy.py` 
-    3. Calcuate confidence interval for the predicted cumulative death  `/IHME/Italy/Prediction_interval_calculation/IHME_nystate_prediction_confidence_interval_Italy.R`   
+    1. Create training data   IHME/Italy/Data_creation/IHME_data_creation.R
+    2. IHME model fitting   IHME/Italy/Model_validation/model_validation_Italy.py
+    3. Calcuate confidence interval for the predicted cumulative death   IHME/Italy/Prediction_interval_calculation/IHME_nystate_prediction_confidence_interval_Italy.R  
 
 #### Validation on New York State
-    1. Create training data  `/IHME/NYstate/Data_creation/IHME_data_creation.R`
-    2. IHME model fitting  `/IHME/NYstate/Model_validation/model_validation_nystate.py` 
-    3. Calcuate confidence interval for the predicted cumulative death  `/IHME/NYstate/Prediction_interval_calculation/IHME_nystate_prediction_confidence_interval_NY.R`   
+    1. Create training data   IHME/NYstate/Data_creation/IHME_data_creation.R
+    2. IHME model fitting   IHME/NYstate/Model_validation/model_validation_nystate.py
+    3. Calcuate confidence interval for the predicted cumulative death   IHME/NYstate/Prediction_interval_calculation/IHME_nystate_prediction_confidence_interval_NY.R 
 
-#### Generate input for Tableau to create figures
-    code for generating the input for Tableau to create the IHME plots in Figure 1. IHME/Plots/Create_input_data_for_plots.R  
-#### ICL
+#### Plots
+    Generate input for Tableau to create the IHME figures in the article   IHME/Plots/Create_input_data_for_plots.R  
+
+
+
+### ICL
+
 
 
 #### eSIR
+#### Validation on Italy
+    eSIR/Italy/Validation_Italy.R
 
-      1. /eSIR/Italy/Validation_Italy.R   code for downloading data, eSIR model fitting and generating the input for Tableau for Italy.
-      
-      2. /eSIR/New York State/Validation_NYstate.R   code for analysis on New York state.
-      
-      3. /eSIR/Plots/Create_input_data_for_tableau_figures.R   code for generating the input for Tableau to create Figure 2.
-      
-      4. /eSIR/R_functions/eSIR_modified_functions.R   modified eSIR function used in our analysis.
+#### Validation on New York State
+    eSIR/NYstate/Validation_NYstate.R
 
-
-
-
+#### Plots
+    Generate input for Tableau to create the eSIR figures in the article 
+    * Italy: eSIR/Plots/Create_input_data_for_tableau_figures_Italy.R
+    * New York State: eSIR/Plots/Create_input_data_for_tableau_figures_NYstate.R
 
 
-## Acknowledgements
+
+
+
+## Contributors
 * Neha Agarwala, Department of Mathematics and Statistics, University of Maryland, Baltimore County
 * Jin Jin, Department of Biostatistics, Johns Hopkins Bloomberg School of Public Health
 * Prosenjit Kundu, Department of Biostatistics, Johns Hopkins Bloomberg School of Public Health
