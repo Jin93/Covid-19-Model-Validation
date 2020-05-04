@@ -11,17 +11,17 @@ link
 ## Contents
 
 ### IHME
-#### Validation on Italy
+#### - Validation on Italy
     1. Create training data   IHME/Italy/Data_creation/IHME_data_creation.R
     2. IHME model fitting   IHME/Italy/Model_validation/model_validation_Italy.py
     3. Calcuate confidence interval for the predicted cumulative death   IHME/Italy/Prediction_interval_calculation/IHME_nystate_prediction_confidence_interval_Italy.R  
 
-#### Validation on New York State
+#### - Validation on New York State
     1. Create training data   IHME/NYstate/Data_creation/IHME_data_creation.R
     2. IHME model fitting   IHME/NYstate/Model_validation/model_validation_nystate.py
     3. Calcuate confidence interval for the predicted cumulative death   IHME/NYstate/Prediction_interval_calculation/IHME_nystate_prediction_confidence_interval_NY.R 
 
-#### Plots
+#### - Plots
     Generate input for Tableau to create the IHME figures in the article   IHME/Plots/Create_input_data_for_plots.R  
 
 
@@ -30,14 +30,15 @@ link
 
 
 
-#### eSIR
-#### Validation on Italy
+### eSIR
+
+#### - Validation on Italy
     eSIR/Italy/Validation_Italy.R
 
-#### Validation on New York State
+#### - Validation on New York State
     eSIR/NYstate/Validation_NYstate.R
 
-#### Plots
+#### - Plots
     Generate input for Tableau to create the eSIR figures in the article 
     -- Italy: eSIR/Plots/Create_input_data_for_tableau_figures_Italy.R
     -- New York State: eSIR/Plots/Create_input_data_for_tableau_figures_NYstate.R
@@ -61,15 +62,27 @@ link
 * Homepage: https://www.imperial.ac.uk/about/covid-19/
 * Code: https://github.com/ImperialCollegeLondon/covid19model
 * References:
-   COVID, I. and Murray, C.J., 2020. Forecasting the impact of the first wave of the COVID-19 pandemic on hospital demand and deaths for the USA and European Economic Area countries. medRxiv.
+
+    [Flaxman, S., Mishra, S., Gandy, A., Unwin, H., Coupland, H., Mellan, T., Zhu, H., Berah, T., Eaton, J., Perez Guzman, P. and Schmit, N., 2020. Report 13: Estimating the number of infections and the impact of non-pharmaceutical interventions on COVID-19 in 11 European countries.](https://www.imperial.ac.uk/media/imperial-college/medicine/mrc-gida/2020-03-30-COVID19-Report-13.pdf)
+    
+    [Flaxman, S., Mishra, S., Gandy, A., Unwin, H.J.T., Coupland, H., Mellan, T.A., Zhu, H., Berah, T., Eaton, J.W., Guzman, P.N. and Schmit, N., 2020. Estimating the number of infections and the impact of non-pharmaceutical interventions on COVID-19 in European countries: technical description update. arXiv preprint arXiv:2004.11342.](https://arxiv.org/abs/2004.11342)
+
 
 
 #### `eSIR` (University of Michigan)
 
 * R package `eSIR`: https://github.com/lilywang1988/eSIR
+* References:
+
+    [Song, P.X., Wang, L., Zhou, Y., He, J., Zhu, B., Wang, F., Tang, L. and Eisenberg, M., 2020. An epidemiological forecast model and software assessing interventions on COVID-19 epidemic in China. medRxiv.](https://www.medrxiv.org/content/10.1101/2020.02.29.20029421v1)
+    
+    [Ray, D., Salvatore, M., Bhattacharyya, R., Wang, L., Mohammed, S., Purkayastha, S., Halder, A., Rix, A., Barker, D., Kleinsasser, M. and Zhou, Y., 2020. Predictions, role of interventions and effects of a historic national lockdown in India's response to the COVID-19 pandemic: data science call to arms. medRxiv.](https://www.medrxiv.org/content/10.1101/2020.04.15.20067256v1)
 
 
-## Data Availability
+## Data Sources
+* Country-level data for Italy and India:   [JHU CSSE COVID-19 GitHub](https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data)
+
+* State-level data for New York:   [New York Times data](https://github.com/nytimes/covid-19-data)
 
 
 
