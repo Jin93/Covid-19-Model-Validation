@@ -24,11 +24,9 @@ Source code for validation and projection of the following Covid-19 models:
 #### IHME
 > `/IHME/Italy/`
 
-      1. IHME_data_creation_Italy.R   download data for Italy.
-      
-      2. IHME_model_validation_Italy.py   python code for IHME model fittiing on Italy data.
-      
-      3. IHME_prediction_confidence_interval_Italy.R   calcuate the confidence interval for the predicted cumulative death in Italy.
+      1. Data_creation/IHME_data_creation.R   create training data for Italy.
+      2. Model_validation/model_validation_Italy.py   python code for IHME model fitting on Italy data.
+      3. Prediction_interval_calculation/Italy_prediction_interval_based_on_model_based_uncertainity.R   calcuate the confidence interval for the predicted cumulative death in Italy.
 
 > `/IHME/New York State/`
 
