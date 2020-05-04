@@ -48,6 +48,7 @@ link
 
 
 <br/>
+
 ## Additional Information
 
 #### `IHME` (Institute of Health Metrics at the University of Washington) 
@@ -82,6 +83,7 @@ link
     [Ray, D., Salvatore, M., Bhattacharyya, R., Wang, L., Mohammed, S., Purkayastha, S., Halder, A., Rix, A., Barker, D., Kleinsasser, M. and Zhou, Y., 2020. Predictions, role of interventions and effects of a historic national lockdown in India's response to the COVID-19 pandemic: data science call to arms. medRxiv.](https://www.medrxiv.org/content/10.1101/2020.04.15.20067256v1)
 
 <br/>
+
 ## Data Sources
 * Country-level data for Italy and India:   [JHU CSSE COVID-19 GitHub](https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data)
 
@@ -90,6 +92,7 @@ link
 
 
 <br/>
+
 ## Contributors
 * Neha Agarwala, Department of Mathematics and Statistics, University of Maryland, Baltimore County
 * Jin Jin, Department of Biostatistics, Johns Hopkins Bloomberg School of Public Health
