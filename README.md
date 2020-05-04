@@ -1,8 +1,10 @@
 # Covid-19-Model-Validation
-Transparency, Reproducibility, and Validation of COVID-19 Projection models
+Transparency, Reproducibility, and Validation of ICL, IHME and eSIR models for Covid-19 death/case projection.
 
 ## Description
-Source code for validation and projection of the following Covid-19 models:
+Source code for the following article:
+
+link
 
 
 ## Contents
