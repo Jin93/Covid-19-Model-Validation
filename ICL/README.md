@@ -16,7 +16,7 @@
 
 ### Contents
 
-> `/ICL/code/`
+> `code/`
 
       1. Italy_NY_till_peak.R  code for training ICL model, making projection for New York and Italy, and generating plots for ICL model validation, training data includes the daily case and deaths number before peak date of New York and Italy, and other 12 Europe countries till May 1st. Note that here in ICL model, self-isolation, public events banning and social distance encouraged are all corresponding to the "stay at home" intervention in the IHME model in this article
       
@@ -31,7 +31,7 @@
       6. loadData_NY_May1.R load the data for New York for dates till May 1st
       
 
-> `/ICL/data/`
+> `data/`
 	
       1.interventions_edited dates for intervention, downloaded from ICL github website, with New York's information added
       
@@ -47,6 +47,6 @@
       
       7. data_merge_JHU_NY_tillMay1.RData case and death number of New York until May 1, output of loadData.R
             
-> `/ICL/model/`
+> `model/`
 
       stan-models model for ICL model fitting, downloaded from ICL github website, version 2
