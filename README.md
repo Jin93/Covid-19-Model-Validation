@@ -10,7 +10,7 @@ link
 
 ## Contents
 
-### `IHME` (Institute of Health Metrics at the University of Washington) 
+### `IHME`
 
 ####   Validation on Italy
     1. Create training data   IHME/Italy/Data_creation/IHME_data_creation.R
@@ -27,12 +27,12 @@ link
 
 
 
-### `ICL` (Imperial College London)
+### `ICL`
 
 
 
 
-### `eSIR` (University of Michigan)
+### `eSIR`
 
 ####   Validation on Italy
     eSIR/Italy/Validation_Italy.R
@@ -59,7 +59,7 @@ link
 
 
 
-### `ICL`
+#### `ICL` (Imperial College London)
 
 * Homepage: https://www.imperial.ac.uk/about/covid-19/
 * Code: https://github.com/ImperialCollegeLondon/covid19model
