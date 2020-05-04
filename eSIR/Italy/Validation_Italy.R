@@ -1,26 +1,26 @@
+# set path to Covid-19-Model-Validation folder
 #install_github("lilywang1988/eSIR")
 library(devtools)
 library(eSIR)
 library(rjags)
 library(ggplot2)
 library(gridExtra)
-source('eSIR_modified_functions.R')
+library(chron)
+library(gtools)
+source('eSIR/R_functions/eSIR_modified_functions.R')
 
 region.name = c('Italy') # name of the country/region, used for extracting Hopkins Covid-19 data
-Ns = c(Italy=6.036e7) #
+Ns = c(Italy=6.036e7)
 # date of the initical lockdown. 
 # We assume that the transmission rate decays as an exponential function after the initial lockdown
 # assume that the lockdown takes effect starting from the next day
 change_time=c(Italy=c("03/04/2020"))
-start.dates = c('Italy' = '2.24.20')
 
-
-T_fin = 200 # number of days used in MCMC
-initial.death = 5 # the n.death on the first day has to be greater than or equal to this value
-lag.val=7 # number of days for parameter tuning
+initial.death = 7 # the n.death on the first day has to be greater than or equal to this value
+lag.val=7 # number of days in the validation data set used for parameter tuning
 lag=14 # c(21,14,7) number of days before peak, i.e. the last day in the training data set
-setwd(paste0('~/Dropbox/Covid-19/eSIR-result/',region.name))
- 
+# note: lag-nag.val is the number of days before peak for the last day in the validation data set
+
 # ------------------------ Data Creation ------------------------
 
 ### death
@@ -31,7 +31,7 @@ region.rows = which(data_county_level_JHU[,'Country.Region']==region.name)
 F.region = data_county_level_JHU[data_county_level_JHU[,'Country.Region']==region.name,]
 F.region = F.region[5:length(F.region)]
 F.region = F.region[(min(which(F.region>=initial.death))):(length(F.region))]
-#start date
+#start date of the training data
 start.date = names(F.region)[1]
 
 county_level_url_JHU = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv"
@@ -59,7 +59,7 @@ colnames(dat) = c('I','F','R')
 rownames(dat) = names(I.region)
 current.date = names(I.region)[length(I.region)]
 
-daily = rbind(0,pmax(t(sapply(1:(nrow(dat)-1),function(x){dat[x+1,]-dat[x,]})),0))
+daily = rbind(NA,pmax(t(sapply(1:(nrow(dat)-1),function(x){dat[x+1,]-dat[x,]})),0))
 rownames(daily) = rownames(dat)
 peak_t = as.numeric(which.max(daily[,'I']))
 pd.tem = as.Date(rownames(daily)[1],format="%m.%d.%Y") + peak_t-1
@@ -110,7 +110,7 @@ death_in_R = as.numeric(dat.train[length(R),'F']/RI_complete[length(R)])
 daily.train = rbind(NA,pmax(t(sapply(1:(nrow(dat.train)-1),function(x){dat.train[x+1,]-dat.train[x,]})),0))
 daily.validation = rbind(pmax(dat[nrow(daily.train),]-dat[nrow(daily.train)-1,],0),pmax(dat[nrow(daily.train)+1,]-dat[nrow(daily.train),],0),pmax(t(sapply(1:(nrow(dat.validation)-1),function(x){dat.validation[x+1,]-dat.validation[x,]})),0))
 plot(time.train,daily.train[,'I'],type='l',lty=1,xlim=c(0,nrow(dat)),xlab='time',
-     ylab='N.cases, N.death, N.recovered',main='JHU Data',ylim=c(0,max(daily)))
+     ylab='N.cases, N.death, N.recovered',main='JHU Data',ylim=c(0,max(daily,na.rm=T)))
 points(c(max(time.train),time.validation),daily.validation[,'I'],type='l',lty='dashed')
 points(time.train,daily.train[,'F'],type='l',lty=1,xlim=c(0,nrow(dat)),col='red')
 points(c(max(time.train),time.validation),daily.validation[,'F'],type='l',lty='dashed',col='red')
@@ -138,21 +138,23 @@ text(tem+runif(1,1,3),daily[tem,'I']*runif(1,0.6,0.8), labels=peak.date, cex=0.7
 legend('topleft', legend=c("Confirmed Cases Training","Confirmed Cases Validation",
                            "Death Training","Death Validation",
                            "Recovered Training","Recovered Validation"),
-       col=c(rep('black',2),rep('red',2),rep('blue',2)), lty=c(1,2,1,2,1,2), cex=0.7)
+       col=c(rep('black',2),rep('red',2),rep('blue',2)), lty=c(1,2,1,2,1,2), cex=0.5)
 
 
 # ------------------------ Fit eSIR model ------------------------
-
+T_fin0 = 200 # the # of days considered in eSIR
 # model fitting and parameter tuning using the 1-week data after the last day of training data
 ress0=list()
 rmse = numeric() # use rmse to select parameters
+# test of eSIR runs without error:
+candidates = expand.grid(pi.min=0.1,lambda0=0.05) 
 # grid search - need to change the search range based on training data
-candidates = expand.grid(pi.min=seq(0.1,0.3,by=0.02),lambda0=seq(0.035,0.07,by=0.005)) 
+#candidates = expand.grid(pi.min=seq(0.1,0.3,by=0.02),lambda0=seq(0.035,0.07,by=0.005)) 
 for (l in 1:nrow(candidates)){
   lambda0 = candidates[l,'lambda0']
   pi.min = candidates[l,'pi.min']
   res.exp <- fit.eSIR(Y,R,begin_str=start.date,death_in_R = death_in_R,change_time=change_time,
-                      T_fin=200,exponential=TRUE,dic=T,lambda0=lambda0,add_death = F,
+                      T_fin=T_fin0,exponential=TRUE,dic=T,lambda0=lambda0,add_death = F,
                       casename=paste0(region.name,"_exp"),save_files = F,save_mcmc=F,
                       save_plot_data = F,M=5e3,nburnin = 2e3, pi.min = pi.min)
   ress0[[l]] = res.exp
@@ -174,7 +176,7 @@ decay.period = res.exp$decay.period # the duration of transmission rate decay
 
 # ------------------------ Create plots ------------------------
 
-T_fin = 200 - 1
+T_fin = T_fin0 - 1
 ress = list()
 ress[[1]] = res.exp
 begin <- chron(dates. = start.date) + 1 # daily cases: starting from the next day
@@ -265,11 +267,11 @@ plot1
 output = data.frame(time = 1:T_fin,
                     date = chron_ls,
                     observed = c((daily[-1,'I']),rep(NA,T_fin+1-nrow(dat))),
-                    estimate = daily.pred.Itotal, # unsmoothed predictxion
+                    estimate = daily.pred.Itotal, # unsmoothed prediction
                     estimate.lb = daily.lower.Itotal, # unsmoothed lower bound
                     estimate.ub = daily.upper.Itotal, # unsmoothed uppwer bound
                     phase=c(rep('Training',nrow(dat.train)-1),rep('Validation',lag.val),rep('Holdout',l.test-lag.val),rep('Projection',T_fin+1-nrow(dat))))
-write.csv(output,file=paste0(region.name,'-eSIR-',lag-lag.val,'.csv'))
+write.csv(output,file=paste0('eSIR/Italy/',region.name,'-eSIR-',lag-lag.val,'days_before_peak.csv'))
 
 ###### please refer to Create_input_for_tablau_plots.R for the code that
-###### generates data used for making the plots in the article.
+###### generates data used for making the eSIR plots in the article.
