@@ -1,8 +1,9 @@
 # Covid-19-Model-Validation
-Transparency, Reproducibility, and Validation of ICL, IHME and eSIR models for Covid-19 death/case projection.
+Transparency, Reproducibility, and Validation of COVID-19 Projection models.
+
 
 ## Description
-Source code for the following article:
+Source code for the following article on validation of ICL, IHME and eSIR models for Covid-19 death/case projection.
 
 link
 
@@ -50,7 +51,7 @@ link
 * Homepage: https://covid19.healthdata.org/
 * Code: https://github.com/ihmeuw-msca/CurveFit
 * References:
-    [COVID, I. and Murray, C.J., 2020. Forecasting the impact of the first wave of the COVID-19 pandemic on hospital demand and deaths for the USA and European Economic Area countries. medRxiv.] (http://www.healthdata.org/sites/default/files/files/Projects/COVID/RA_COVID-forecasting-USA-EEA_042120.pdf)
+    [COVID, I. and Murray, C.J., 2020. Forecasting the impact of the first wave of the COVID-19 pandemic on hospital demand and deaths for the USA and European Economic Area countries. medRxiv.](http://www.healthdata.org/sites/default/files/files/Projects/COVID/RA_COVID-forecasting-USA-EEA_042120.pdf)
 
 
 
