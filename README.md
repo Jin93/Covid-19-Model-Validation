@@ -1,5 +1,5 @@
 # Covid-19-Model-Validation
-Transparency, Reproducibility, and Validation of COVID-19 Projection models.
+Transparency, Reproducibility, and Validity of COVID-19 Projection models.
 
 
 ## Description
