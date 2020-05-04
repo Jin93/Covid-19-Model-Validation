@@ -3,9 +3,9 @@ Transparency, Reproducibility, and Validity of COVID-19 Projection Models.
 
 
 ## Description
-Source code for the following article on validation of ICL, IHME and eSIR models for Covid-19 death/case projection.
+Source code for the article on validation of ICL, IHME and eSIR models for Covid-19 death/case projection.
 
-link
+[Transparency, Reproducibility, and Validity of COVID-19 Projection Models](https://medium.com/@nilanjan10c/transparency-reproducibility-and-validity-of-covid-19-projection-models-78592e029f28)
 
 
 
