@@ -21,20 +21,19 @@ Source code for validation and projection of the following Covid-19 models:
 
 ## Contents
 
-#### IHME
-##### Validation on Italy
-   1. Create training data  `/IHME/Italy/Data_creation/IHME_data_creation.R`
-   2. IHME model fitting  `/IHME/Italy/Model_validation/model_validation_Italy.py` 
-   3. Calcuate confidence interval for the predicted cumulative death  `/IHME/Italy/Prediction_interval_calculation/IHME_nystate_prediction_confidence_interval_Italy.R`   
+### IHME
+#### Validation on Italy
+    1. Create training data  `/IHME/Italy/Data_creation/IHME_data_creation.R`
+    2. IHME model fitting  `/IHME/Italy/Model_validation/model_validation_Italy.py` 
+    3. Calcuate confidence interval for the predicted cumulative death  `/IHME/Italy/Prediction_interval_calculation/IHME_nystate_prediction_confidence_interval_Italy.R`   
 
-##### Validation on New York State
-   1. Create training data  `/IHME/NYstate/Data_creation/IHME_data_creation.R`
-   2. IHME model fitting  `/IHME/NYstate/Model_validation/model_validation_nystate.py` 
-   3. Calcuate confidence interval for the predicted cumulative death  `/IHME/NYstate/Prediction_interval_calculation/IHME_nystate_prediction_confidence_interval_NY.R`   
+#### Validation on New York State
+    1. Create training data  `/IHME/NYstate/Data_creation/IHME_data_creation.R`
+    2. IHME model fitting  `/IHME/NYstate/Model_validation/model_validation_nystate.py` 
+    3. Calcuate confidence interval for the predicted cumulative death  `/IHME/NYstate/Prediction_interval_calculation/IHME_nystate_prediction_confidence_interval_NY.R`   
 
-> `/IHME/Plots/`
-      
-      Create_input_data_for_tableau_figures.R   code for generating the input for Tableau to create the IHME plots in Figure 1.
+#### Generate input for Tableau to create figures
+    code for generating the input for Tableau to create the IHME plots in Figure 1. IHME/Plots/Create_input_data_for_plots.R  
 #### ICL
 
 
