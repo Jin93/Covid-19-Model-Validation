@@ -1,5 +1,7 @@
 ## Notes for ICL model validation
 
+ICL model fitting requires R 3.6.3.
+
 ### Training Data Specification
 
 * Training data for Italy is from 03/02/20 to 03/13/20 (2 weeks before peak), 03/20/20 (1 week before peak) or 03/27/20 (till peak). 
