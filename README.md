@@ -10,7 +10,7 @@ link
 
 ## Contents
 
-#### `IHME`
+### IHME
 
 ####   Validation on Italy
     1. Create training data   IHME/Italy/Data_creation/IHME_data_creation.R
@@ -27,12 +27,12 @@ link
 
 
 
-#### `ICL`
+### ICL
 
 
 
 
-#### `eSIR`
+### eSIR
 
 ####   Validation on Italy
     eSIR/Italy/Validation_Italy.R
