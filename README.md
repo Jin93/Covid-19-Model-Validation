@@ -30,7 +30,7 @@ link
 
 ### ICL
 
-Detailed documentation of the model validation of ICL is provided at ICL/README.md.
+Detailed documentation for ICL is provided at ICL/README.md.
 
 
 
