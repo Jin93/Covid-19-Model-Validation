@@ -1,4 +1,5 @@
-setwd("Covid-19-Model-Validation")
+setwd("Covid-19-Model-Validation/ICL")
+
 #### Data Format Adjustment for Tableau Input
 DataFormAdjust <-function(df,name){
   # remove the first column
@@ -47,9 +48,9 @@ DataFormAdjust <-function(df,name){
 }
 
 # read results from ICL models for italy
-it0<-read.csv("italy_0week_beforepeak_ICL.csv")
-it1<-read.csv("italy_1week_beforepeak_ICL.csv")
-it2<-read.csv("italy_2week_beforepeak_ICL.csv")
+it0<-read.csv("/Users/yiwang/Dropbox/cvd/cvd_N/code_final_format/fig/ita_ny_0week_constraint_4chains/italy_0week_constraint_4chains.csv")
+it1<-read.csv("/Users/yiwang/Dropbox/cvd/cvd_N/code_final_format/fig/ita_ny_1week_constraint_4chains/italy_1week_constraint_4chains.csv")
+it2<-read.csv("/Users/yiwang/Dropbox/cvd/cvd_N/code_final_format/fig/ita_ny_2week_constraint_4chains/italy_2week_constraint_4chains.csv")
 
 # change the data format
 it0final<-DataFormAdjust(it0,"Till peak")
@@ -58,15 +59,15 @@ it2final<-DataFormAdjust(it2,"14 days before peak")
 
 # write into xlsx file
 library(xlsx)
-write.xlsx(itfinal,"df_Italy_ICL.xlsx")
+write.xlsx(itfinal,"/Users/yiwang/Dropbox/cvd/cvd_N/code_final_format/fig/df_Italy_ICL.xlsx")
 
 # combine data framework
 itfinal<-rbind(it0final,it1final,it2final)
 
 # read results from ICL models for NewYork
-ny0<-read.csv("ICL_NY_0week_beforepeak_long_projection.csv")
-ny1<-read.csv("ICL_NY_1week_beforepeak_long_projection.csv")
-ny2<-read.csv("ICL_NY_2week_beforepeak_long_projection.csv")
+ny0<-read.csv("/Users/yiwang/Dropbox/cvd/cvd_N/code_final_format/fig/ita_ny_0week_constraint_4chains/NY_0week_constraint_4chains.csv")
+ny1<-read.csv("/Users/yiwang/Dropbox/cvd/cvd_N/code_final_format/fig/ita_ny_1week_constraint_4chains/NY_1week_constraint_4chains.csv")
+ny2<-read.csv("/Users/yiwang/Dropbox/cvd/cvd_N/code_final_format/fig/ita_ny_2week_constraint_4chains/NY_2week_constraint_4chains.csv")
 
 # change the data format
 ny0final<-DataFormAdjust(ny0,"Till peak")
@@ -77,4 +78,26 @@ ny2final<-DataFormAdjust(ny2,"14 days before peak")
 nyfinal<-rbind(ny0final,ny1final,ny2final)
 
 library(xlsx)
-write.xlsx(nyfinal,"df_NY_ICL.xlsx")
+write.xlsx(nyfinal,"/Users/yiwang/Dropbox/cvd/cvd_N/code_final_format/fig/df_NY_ICL.xlsx")
+
+
+
+
+############################### NY, till May1 observed
+
+# read results from ICL models for NewYork
+ny0<-read.csv("/Users/yiwang/Dropbox/cvd/cvd_N/code_final_format/fig/ita_ny_0week_constraint_4chains/NY_0week_constraint_4chains.csv")
+ny1<-read.csv("/Users/yiwang/Dropbox/cvd/cvd_N/code_final_format/fig/ita_ny_1week_constraint_4chains/NY_1week_constraint_4chains.csv")
+ny2<-read.csv("/Users/yiwang/Dropbox/cvd/cvd_N/code_final_format/fig/ita_ny_2week_constraint_4chains/NY_2week_constraint_4chains.csv")
+
+# change the data format
+ny0final<-DataFormAdjust(ny0,"Till peak")
+ny1final<-DataFormAdjust(ny1,"7 days before peak")
+ny2final<-DataFormAdjust(ny2,"14 days before peak")
+
+# combine data framework
+nyfinal<-rbind(ny0final,ny1final,ny2final)
+
+library(xlsx)
+write.xlsx(nyfinal,"/Users/yiwang/Dropbox/cvd/cvd_N/code_final_format/fig/df_NY_ICL_v2.xlsx")
+
