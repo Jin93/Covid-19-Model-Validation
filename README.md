@@ -4,22 +4,6 @@ Transparency, Reproducibility, and Validation of COVID-19 Projection models
 ## Description
 Source code for validation and projection of the following Covid-19 models:
 
-#### `IHME` (Institute of Health Metrics at the University of Washington) 
-
-* Homepage: https://covid19.healthdata.org/
-* Code: https://github.com/ihmeuw-msca/CurveFit
-* References:
-   1. COVID, I. and Murray, C.J., 2020. Forecasting the impact of the first wave of the COVID-19 pandemic on hospital demand and deaths for the USA and European Economic Area countries. medRxiv.
-
-#### `ICL` (Imperial College London)
-
-* Homepage: https://www.imperial.ac.uk/about/covid-19/
-* Code: https://github.com/ImperialCollegeLondon/covid19model
-
-#### `eSIR` (University of Michigan)
-
-* R package `eSIR`: https://github.com/lilywang1988/eSIR
-
 
 ## Contents
 
@@ -55,6 +39,33 @@ Source code for validation and projection of the following Covid-19 models:
     -- Italy: eSIR/Plots/Create_input_data_for_tableau_figures_Italy.R
     -- New York State: eSIR/Plots/Create_input_data_for_tableau_figures_NYstate.R
 
+
+
+## Additional Information
+
+#### `IHME` (Institute of Health Metrics at the University of Washington) 
+
+* Homepage: https://covid19.healthdata.org/
+* Code: https://github.com/ihmeuw-msca/CurveFit
+* References:
+    [COVID, I. and Murray, C.J., 2020. Forecasting the impact of the first wave of the COVID-19 pandemic on hospital demand and deaths for the USA and European Economic Area countries. medRxiv.] (http://www.healthdata.org/sites/default/files/files/Projects/COVID/RA_COVID-forecasting-USA-EEA_042120.pdf)
+
+
+
+#### `ICL` (Imperial College London)
+
+* Homepage: https://www.imperial.ac.uk/about/covid-19/
+* Code: https://github.com/ImperialCollegeLondon/covid19model
+* References:
+   COVID, I. and Murray, C.J., 2020. Forecasting the impact of the first wave of the COVID-19 pandemic on hospital demand and deaths for the USA and European Economic Area countries. medRxiv.
+
+
+#### `eSIR` (University of Michigan)
+
+* R package `eSIR`: https://github.com/lilywang1988/eSIR
+
+
+## Data Availability
 
 
 
