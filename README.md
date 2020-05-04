@@ -50,8 +50,8 @@ Source code for validation and projection of the following Covid-19 models:
 
 #### Plots
     Generate input for Tableau to create the eSIR figures in the article 
-    * Italy: eSIR/Plots/Create_input_data_for_tableau_figures_Italy.R
-    * New York State: eSIR/Plots/Create_input_data_for_tableau_figures_NYstate.R
+    -- Italy: eSIR/Plots/Create_input_data_for_tableau_figures_Italy.R
+    -- New York State: eSIR/Plots/Create_input_data_for_tableau_figures_NYstate.R
 
 
 
