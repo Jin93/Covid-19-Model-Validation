@@ -11,17 +11,17 @@ link
 ## Contents
 
 ### IHME
-#### - Validation on Italy
+#### -- Validation on Italy
     1. Create training data   IHME/Italy/Data_creation/IHME_data_creation.R
     2. IHME model fitting   IHME/Italy/Model_validation/model_validation_Italy.py
     3. Calcuate confidence interval for the predicted cumulative death   IHME/Italy/Prediction_interval_calculation/IHME_nystate_prediction_confidence_interval_Italy.R  
 
-#### - Validation on New York State
+#### -- Validation on New York State
     1. Create training data   IHME/NYstate/Data_creation/IHME_data_creation.R
     2. IHME model fitting   IHME/NYstate/Model_validation/model_validation_nystate.py
     3. Calcuate confidence interval for the predicted cumulative death   IHME/NYstate/Prediction_interval_calculation/IHME_nystate_prediction_confidence_interval_NY.R 
 
-#### - Plots
+#### -- Plots
     Generate input for Tableau to create the IHME figures in the article   IHME/Plots/Create_input_data_for_plots.R  
 
 
@@ -32,16 +32,16 @@ link
 
 ### eSIR
 
-#### - Validation on Italy
+#### -- Validation on Italy
     eSIR/Italy/Validation_Italy.R
 
-#### - Validation on New York State
+#### -- Validation on New York State
     eSIR/NYstate/Validation_NYstate.R
 
-#### - Plots
+#### -- Plots
     Generate input for Tableau to create the eSIR figures in the article 
-    -- Italy: eSIR/Plots/Create_input_data_for_tableau_figures_Italy.R
-    -- New York State: eSIR/Plots/Create_input_data_for_tableau_figures_NYstate.R
+       Italy: eSIR/Plots/Create_input_data_for_tableau_figures_Italy.R
+       New York State: eSIR/Plots/Create_input_data_for_tableau_figures_NYstate.R
 
 
 
@@ -63,9 +63,9 @@ link
 * Code: https://github.com/ImperialCollegeLondon/covid19model
 * References:
 
-    [Flaxman, S., Mishra, S., Gandy, A., Unwin, H., Coupland, H., Mellan, T., Zhu, H., Berah, T., Eaton, J., Perez Guzman, P. and Schmit, N., 2020. Report 13: Estimating the number of infections and the impact of non-pharmaceutical interventions on COVID-19 in 11 European countries.](https://www.imperial.ac.uk/media/imperial-college/medicine/mrc-gida/2020-03-30-COVID19-Report-13.pdf)
+    -- [Flaxman, S., Mishra, S., Gandy, A., Unwin, H., Coupland, H., Mellan, T., Zhu, H., Berah, T., Eaton, J., Perez Guzman, P. and Schmit, N., 2020. Report 13: Estimating the number of infections and the impact of non-pharmaceutical interventions on COVID-19 in 11 European countries.](https://www.imperial.ac.uk/media/imperial-college/medicine/mrc-gida/2020-03-30-COVID19-Report-13.pdf)
     
-    [Flaxman, S., Mishra, S., Gandy, A., Unwin, H.J.T., Coupland, H., Mellan, T.A., Zhu, H., Berah, T., Eaton, J.W., Guzman, P.N. and Schmit, N., 2020. Estimating the number of infections and the impact of non-pharmaceutical interventions on COVID-19 in European countries: technical description update. arXiv preprint arXiv:2004.11342.](https://arxiv.org/abs/2004.11342)
+    -- [Flaxman, S., Mishra, S., Gandy, A., Unwin, H.J.T., Coupland, H., Mellan, T.A., Zhu, H., Berah, T., Eaton, J.W., Guzman, P.N. and Schmit, N., 2020. Estimating the number of infections and the impact of non-pharmaceutical interventions on COVID-19 in European countries: technical description update. arXiv preprint arXiv:2004.11342.](https://arxiv.org/abs/2004.11342)
 
 
 
