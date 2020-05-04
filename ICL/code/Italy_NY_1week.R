@@ -425,9 +425,9 @@ DEBUG=TRUE
 ########
 
 set.seed(111)
-#
 
 
+# note: it takes about 5 hours to run 1000 iterations on macbook air. 
 fit = sampling(m,data=stan_data,iter=1000,warmup=500,chains=4,thin=4,
                control = list(adapt_delta = 0.95, max_treedepth = 10))
 niter_notburning=1000-500
@@ -805,8 +805,4 @@ for(i in 14){#NY
   dev.off()
   
 }
-
-
-
-# 
 
