@@ -1,6 +1,6 @@
 ## Notes for ICL model validation
 
-ICL model fitting requires R 3.6.3.
+The code was tested in R 3.6.3.
 
 ### Training Data Specification
 
