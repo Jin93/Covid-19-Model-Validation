@@ -20,11 +20,17 @@ The code was tested in R 3.6.3.
 
 > `code/`
 
-      1. Italy_NY_till_peak.R  code for training ICL model, making projection for New York and Italy, and generating plots for ICL model validation, training data includes the daily case and deaths number before peak date of New York and Italy, and other 12 Europe countries till May 1st. Note that here in ICL model, self-isolation, public events banning and social distance encouraged are all corresponding to the "stay at home" intervention in the IHME model in this article
+      1. Italy_NY_till_peak.R  code for training ICL model, making projection for New York and Italy, and generating plots for ICL model validation.
       
-      2. Italy_NY_1week.R  code for training ICL model, making projection for New York and Italy, and generating plots for ICL model validation, training data includes the daily case and deaths number 1 week prior to peak date of New York and Italy, and other 12 Europe countries till May 1st.
+      * Training data includes the daily case and deaths number before peak date of New York and Italy, and other 12 Europe countries till May 1st. 
+      Note that here in ICL model, self-isolation, public events banning and social distance encouraged are all corresponding to the "stay at home" intervention in the IHME model in this article
       
-      3. Italy_NY_2week.R  code for training ICL model, making projection for New York and Italy, and generating plots for ICL model validation, training data includes the daily case and deaths number 2 weeks prior to peak date of New York and Italy, and other 12 Europe countries till May 1st.
+      2. Italy_NY_1week.R  code for training ICL model, making projection for New York and Italy, and generating plots for ICL model validation.
+      
+      * Training data includes the daily case and deaths number 1 week prior to peak date of New York and Italy, and other 12 Europe countries till May 1st.
+      
+      3. Italy_NY_2week.R  code for training ICL model, making projection for New York and Italy, and generating plots for ICL model validation.
+      * Training data includes the daily case and deaths number 2 weeks prior to peak date of New York and Italy, and other 12 Europe countries till May 1st.
       
       4. DataFormAdjust.R: format the output csv file to for tableau input
       
