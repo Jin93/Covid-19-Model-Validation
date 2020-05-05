@@ -25,9 +25,9 @@ The code was tested in R 3.6.3.
      code for training ICL model, making projection for New York and Italy, and generating plots for ICL model validation.
       
    Note: 
-     * Training data includes the daily case and deaths number before peak date of New York and Italy, 
-     and other 12 Europe countries till May 1st. 
-     * For ICL model, self-isolation, public events banning and social distance encouraged 
+     (1)Training data includes the daily case and deaths number before peak date of New York and Italy, 
+     and other 12 Europe countries till May 1st; 
+     (2) For ICL model, self-isolation, public events banning and social distance encouraged 
      are all corresponding to the "stay at home" intervention in the IHME model in this article
       
      2. Italy_NY_1week.R 
