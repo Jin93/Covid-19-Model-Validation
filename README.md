@@ -60,7 +60,7 @@ Detailed documentation for ICL is provided at ICL/README.md.
 * References:
 
     [COVID, I. and Murray, C.J., 2020. Forecasting the impact of the first wave of the COVID-19 pandemic on hospital demand and deaths for the USA and European Economic Area countries. medRxiv.](http://www.healthdata.org/sites/default/files/files/Projects/COVID/RA_COVID-forecasting-USA-EEA_042120.pdf)
-
+* Accession date: April 17, 2020
 
 
 #### `ICL` (Imperial College London)
@@ -83,13 +83,14 @@ Detailed documentation for ICL is provided at ICL/README.md.
     [Song, P.X., Wang, L., Zhou, Y., He, J., Zhu, B., Wang, F., Tang, L. and Eisenberg, M., 2020. An epidemiological forecast model and software assessing interventions on COVID-19 epidemic in China. medRxiv.](https://www.medrxiv.org/content/10.1101/2020.02.29.20029421v1)
     
     [Ray, D., Salvatore, M., Bhattacharyya, R., Wang, L., Mohammed, S., Purkayastha, S., Halder, A., Rix, A., Barker, D., Kleinsasser, M. and Zhou, Y., 2020. Predictions, role of interventions and effects of a historic national lockdown in India's response to the COVID-19 pandemic: data science call to arms. medRxiv.](https://www.medrxiv.org/content/10.1101/2020.04.15.20067256v1)
+* Accession date: April 20, 2020
 
 <br/>
 
 ## Data Sources
-* Country-level data for Italy and India:   [JHU CSSE COVID-19 GitHub](https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data)
+* Country-level data for Italy and India:   [JHU CSSE COVID-19 GitHub](https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data) (Accession date: May 2nd, 2020)
 
-* State-level data for New York:   [New York Times data](https://github.com/nytimes/covid-19-data)
+* State-level data for New York:   [New York Times data](https://github.com/nytimes/covid-19-data) (Accession date: May 2nd, 2020)
 
 
 
