@@ -72,7 +72,7 @@ Detailed documentation for ICL is provided at ICL/README.md.
     [Flaxman, S., Mishra, S., Gandy, A., Unwin, H., Coupland, H., Mellan, T., Zhu, H., Berah, T., Eaton, J., Perez Guzman, P. and Schmit, N., 2020. Report 13: Estimating the number of infections and the impact of non-pharmaceutical interventions on COVID-19 in 11 European countries.](https://www.imperial.ac.uk/media/imperial-college/medicine/mrc-gida/2020-03-30-COVID19-Report-13.pdf)
     
     [Flaxman, S., Mishra, S., Gandy, A., Unwin, H.J.T., Coupland, H., Mellan, T.A., Zhu, H., Berah, T., Eaton, J.W., Guzman, P.N. and Schmit, N., 2020. Estimating the number of infections and the impact of non-pharmaceutical interventions on COVID-19 in European countries: technical description update. arXiv preprint arXiv:2004.11342.](https://arxiv.org/abs/2004.11342)
-
+* Accession date: April 15, 2020
 
 
 #### `eSIR` (University of Michigan)
